@@ -15,7 +15,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup MSVC environment
         uses: ilammy/msvc-dev-cmd@v1
 

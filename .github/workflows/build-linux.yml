@@ -70,11 +70,6 @@ jobs:
 
       - name: Prepare AppImage icon
         run: |
-          if [ ! -f ./resources/favicon_neuro.png ]; then
-            echo "Missing icon file: resources/favicon_neuro.png"
-            echo "Add a square PNG icon with a common size such as 256x256."
-            exit 1
-          fi
           cp ./resources/favicon_neuro.png ./impcheck.png
 
       - name: Build AppImage

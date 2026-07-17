@@ -44,6 +44,11 @@ jobs:
             exit 1
           fi
 
+      - name: Register eego SDK for linker
+        run: |
+          sudo ln -sf "$GITHUB_WORKSPACE/libeego-SDK.so" /usr/lib/libeego-SDK.so
+          ls -l /usr/lib/libeego-SDK.so
+
       - name: Configure and build (qmake + make)
         run: |
           rm -rf build-linux

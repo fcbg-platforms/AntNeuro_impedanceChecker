@@ -64,13 +64,8 @@ jobs:
           Type=Application
           Name=impCheck
           Exec=impCheck
-          Icon=impcheck
           Categories=Science;
           EOF
-
-      - name: Prepare icon
-        run: |
-          cp resources/HeadImage.png impcheck.png
 
       - name: Build AppImage
         run: |
@@ -84,7 +79,6 @@ jobs:
             --appdir AppDir \
             -e build-linux/impCheck \
             -d impcheck.desktop \
-            -i impcheck.png \
             --library ./libeego-SDK.so \
             --plugin qt \
             --output appimage

@@ -1,1 +1,6 @@
 impCheck.pro.user
+
+# Decrypted vendor SDK binaries (use encrypted *.enc files in repo)
+eego-SDK.dll
+eego-SDK.lib
+libeego-SDK.so

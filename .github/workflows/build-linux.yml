@@ -21,6 +21,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential \
+            libboost-dev \
             libgl1-mesa-dev \
             libxkbcommon-x11-0 \
             libxcb-cursor0 \
@@ -45,8 +46,9 @@ jobs:
 
       - name: Configure and build (qmake + make)
         run: |
-          mkdir -p build
-          cd build
+          rm -rf build-linux
+          mkdir -p build-linux
+          cd build-linux
           qmake ../impCheck.pro CONFIG+=release
           make -j"$(nproc)"
 
@@ -72,7 +74,7 @@ jobs:
 
           ./linuxdeploy.AppImage \
             --appdir AppDir \
-            -e build/impCheck \
+            -e build-linux/impCheck \
             -d impcheck.desktop \
             -i impcheck.png \
             --library ./libeego-SDK.so \
@@ -85,4 +87,4 @@ jobs:
           name: impCheck-linux
           path: |
             ./*.AppImage
-            build/impCheck
+            build-linux/impCheck

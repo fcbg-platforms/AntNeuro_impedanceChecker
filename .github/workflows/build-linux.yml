@@ -74,8 +74,11 @@ jobs:
 
       - name: Build AppImage
         run: |
+          export APPIMAGE_EXTRACT_AND_RUN=1
           wget -O linuxdeploy.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -O linuxdeploy-plugin-qt.AppImage https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x linuxdeploy.AppImage
+          chmod +x linuxdeploy-plugin-qt.AppImage
 
           ./linuxdeploy.AppImage \
             --appdir AppDir \

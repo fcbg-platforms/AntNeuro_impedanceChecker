@@ -25,8 +25,28 @@ jobs:
             libgl1-mesa-dev \
             libxkbcommon-x11-0 \
             libxcb-cursor0 \
+            openssl \
             patchelf \
             wget
+
+      - name: Decrypt Linux SDK
+        env:
+          SDK_DECRYPT_PASSPHRASE: ${{ secrets.SDK_DECRYPT_PASSPHRASE }}
+        run: |
+          if [ -z "${SDK_DECRYPT_PASSPHRASE}" ]; then
+            echo "Missing GitHub secret SDK_DECRYPT_PASSPHRASE."
+            exit 1
+          fi
+
+          if [ ! -f ./libeego-SDK.so.enc ]; then
+            echo "Missing encrypted file libeego-SDK.so.enc"
+            exit 1
+          fi
+
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
+            -in ./libeego-SDK.so.enc \
+            -out ./libeego-SDK.so \
+            -pass pass:"${SDK_DECRYPT_PASSPHRASE}"
 
       - name: Install Qt 6
         uses: jurplel/install-qt-action@v4

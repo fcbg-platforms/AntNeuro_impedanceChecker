@@ -26,6 +26,29 @@ jobs:
           target: 'desktop'
           arch: 'win64_msvc2019_64'
 
+      - name: Install OpenSSL
+        shell: powershell
+        run: |
+          choco install openssl.light --yes --no-progress
+
+      - name: Decrypt SDK binaries
+        shell: powershell
+        env:
+          SDK_DECRYPT_PASSPHRASE: ${{ secrets.SDK_DECRYPT_PASSPHRASE }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:SDK_DECRYPT_PASSPHRASE)) {
+            throw 'Missing GitHub secret SDK_DECRYPT_PASSPHRASE.'
+          }
+
+          if (-not (Test-Path .\eego-SDK.dll.enc)) { throw 'Missing encrypted file eego-SDK.dll.enc' }
+          if (-not (Test-Path .\eego-SDK.lib.enc)) { throw 'Missing encrypted file eego-SDK.lib.enc' }
+
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in .\eego-SDK.dll.enc -out .\eego-SDK.dll -pass pass:$env:SDK_DECRYPT_PASSPHRASE
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in .\eego-SDK.lib.enc -out .\eego-SDK.lib -pass pass:$env:SDK_DECRYPT_PASSPHRASE
+
+          if (-not (Test-Path .\eego-SDK.dll)) { throw 'Failed to decrypt eego-SDK.dll' }
+          if (-not (Test-Path .\eego-SDK.lib)) { throw 'Failed to decrypt eego-SDK.lib' }
+
       - name: Install Boost headers
         shell: powershell
         run: |

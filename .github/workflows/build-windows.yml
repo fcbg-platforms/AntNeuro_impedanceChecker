@@ -1,0 +1,58 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.6.3'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+
+      - name: Configure and build (qmake + nmake)
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Path build -Force | Out-Null
+          Push-Location build
+          qmake ..\impCheck.pro CONFIG+=release
+          nmake
+          Pop-Location
+
+      - name: Collect and deploy executable
+        shell: powershell
+        run: |
+          $exe = Get-ChildItem -Path build -Recurse -File -Filter impCheck.exe | Select-Object -First 1
+          if (-not $exe) { throw 'impCheck.exe not found after build.' }
+
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          Copy-Item $exe.FullName dist\impCheck.exe -Force
+
+          if (Test-Path .\eego-SDK.dll) {
+            Copy-Item .\eego-SDK.dll dist\eego-SDK.dll -Force
+          }
+
+          windeployqt --release --no-translations dist\impCheck.exe
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: impCheck-windows
+          path: dist/

@@ -1,0 +1,88 @@
+name: Build Linux AppImage
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  build-linux-appimage:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libgl1-mesa-dev \
+            libxkbcommon-x11-0 \
+            libxcb-cursor0 \
+            patchelf \
+            wget
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.6.3'
+          host: 'linux'
+          target: 'desktop'
+          arch: 'gcc_64'
+
+      - name: Ensure Linux eego SDK exists
+        run: |
+          if [ ! -f ./libeego-SDK.so ]; then
+            echo "Missing ./libeego-SDK.so in repository root."
+            echo "Add libeego-SDK.so before running Linux/AppImage build."
+            exit 1
+          fi
+
+      - name: Configure and build (qmake + make)
+        run: |
+          mkdir -p build
+          cd build
+          qmake ../impCheck.pro CONFIG+=release
+          make -j"$(nproc)"
+
+      - name: Create desktop file
+        run: |
+          cat > impcheck.desktop << 'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=impCheck
+          Exec=impCheck
+          Icon=impcheck
+          Categories=Science;
+          EOF
+
+      - name: Prepare icon
+        run: |
+          cp resources/HeadImage.png impcheck.png
+
+      - name: Build AppImage
+        run: |
+          wget -O linuxdeploy.AppImage https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy.AppImage
+
+          ./linuxdeploy.AppImage \
+            --appdir AppDir \
+            -e build/impCheck \
+            -d impcheck.desktop \
+            -i impcheck.png \
+            --library ./libeego-SDK.so \
+            --plugin qt \
+            --output appimage
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: impCheck-linux
+          path: |
+            ./*.AppImage
+            build/impCheck

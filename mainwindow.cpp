@@ -52,6 +52,20 @@ static const QMap<int, elec> electrodeMap_203 = {
     {119, elec{118,"PPO5H"}},   {120, elec{119,"PPO6H"}},   {121, elec{120,"PPO10H"}},   {122, elec{121,"POO9H"}},    {123, elec{122,"POO3H"}},    {124, elec{123,"POO4H"}},    {125, elec{124,"POO10H"}},
     {126, elec{125,"OI1H"}},    {127, elec{126,"OI2H"}},    {176, elec{132,"REF"}},      {177, elec{134,"GRD"}}
 };
+
+// NA-265 (eemagine DRN-15891, datasheet UDO-SM-0987): 64 ch 10-10, REF at CPz, GND at AFz.
+static const QMap<int, elec> electrodeMap_265 = {
+    {0,  elec{0,"FP1"}},        {1,  elec{2,"FP2"}},        {2,  elec{135,"F9"}},       {3,  elec{3,"F7"}},         {4,  elec{4,"F3"}},         {5,  elec{5,"FZ"}},         {6,  elec{6,"F4"}},
+    {7,  elec{7,"F8"}},         {8,  elec{136,"F10"}},      {9,  elec{8,"FC5"}},        {10, elec{9,"FC1"}},        {11, elec{10,"FC2"}},       {12, elec{11,"FC6"}},       {13, elec{137,"T9"}},
+    {14, elec{13,"T7"}},        {15, elec{14,"C3"}},        {16, elec{16,"C4"}},        {17, elec{17,"T8"}},        {18, elec{138,"T10"}},      {19, elec{19,"CP5"}},       {20, elec{20,"CP1"}},
+    {21, elec{21,"CP2"}},       {22, elec{22,"CP6"}},       {23, elec{69,"P9"}},        {24, elec{23,"P7"}},        {25, elec{24,"P3"}},        {26, elec{25,"PZ"}},        {27, elec{26,"P4"}},
+    {28, elec{27,"P8"}},        {29, elec{70,"P10"}},       {30, elec{29,"O1"}},        {31, elec{30,"O2"}},        {32, elec{31,"AF7"}},       {33, elec{32,"AF3"}},       {34, elec{33,"AF4"}},
+    {35, elec{34,"AF8"}},       {36, elec{35,"F5"}},        {37, elec{36,"F1"}},        {38, elec{37,"F2"}},        {39, elec{38,"F6"}},        {40, elec{39,"FC3"}},       {41, elec{40,"FCZ"}},
+    {42, elec{41,"FC4"}},       {43, elec{42,"C5"}},        {44, elec{43,"C1"}},        {45, elec{44,"C2"}},        {46, elec{45,"C6"}},        {47, elec{46,"CP3"}},       {48, elec{47,"CP4"}},
+    {49, elec{48,"P5"}},        {50, elec{49,"P1"}},        {51, elec{50,"P2"}},        {52, elec{51,"P6"}},        {53, elec{52,"PO5"}},       {54, elec{53,"PO3"}},       {55, elec{54,"PO4"}},
+    {56, elec{55,"PO6"}},       {57, elec{56,"FT7"}},       {58, elec{57,"FT8"}},       {59, elec{58,"TP7"}},       {60, elec{59,"TP8"}},       {61, elec{60,"PO7"}},       {62, elec{61,"PO8"}},
+    {63, elec{28,"POZ"}},       {64, elec{132,"REF"}},      {65, elec{133,"GRD"}}
+};
 //---------------------------------------------------------------------------
 
 
@@ -425,6 +439,10 @@ void MainWindow::on_capID(int posID) {
     }
     else if (posID == 3) {
         this->electrodeMap= &electrodeMap_203;
+        this->refMask = 0xFFFFFFFFFFFFFFFF;
+    }
+    else if (posID == 4) {
+        this->electrodeMap= &electrodeMap_265;
         this->refMask = 0xFFFFFFFFFFFFFFFF;
     }
 

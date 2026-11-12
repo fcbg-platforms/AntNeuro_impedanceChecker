@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    a.setWindowIcon(QIcon(":resources/CB_icon.ico"));
+    a.setWindowIcon(QIcon(":/resources/favicon_neuro.png"));
     MainWindow w;
     w.show();
 

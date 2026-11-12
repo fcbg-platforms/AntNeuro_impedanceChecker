@@ -28,6 +28,8 @@ FORMS += mainwindow.ui
 CONFIG += qt warn_on\
           c++11\
 
+DEFINES += EEGO_SDK_BIND_STATIC
+
 
 unix:!macx: {
     LIBS += -leego-SDK -ldl

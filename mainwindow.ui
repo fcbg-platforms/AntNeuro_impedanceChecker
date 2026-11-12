@@ -61,6 +61,11 @@
                  <string>CA-203   (128 ch)</string>
                 </property>
                </item>
+               <item>
+                <property name="text">
+                 <string>NA-265   (64 ch)</string>
+                </property>
+               </item>
               </widget>
              </item>
              <item>

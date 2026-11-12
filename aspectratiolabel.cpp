@@ -73,6 +73,9 @@ void AspectRatioLabel::displayLed() {
         createLed("HEOGR", 100.0, 30.0);      createLed("HEOGL", 30.0, 30.0);      createLed("VEOGU", 65, 0.0);         createLed("VEOGL", 65, 60);
         createLed("REF", 360.0, 306.0);       createLed("GRD", 360.0, 110.0);      createLed("GRD", 700.0, 30.0);
 
+        // Extra 10-10 positions (NA-265 cap). Appended to keep the previous indices unchanged.
+        createLed("F9", 150.0, 140.0);        createLed("F10", 570.0, 140.0);      createLed("T9", 110.0, 257.0);       createLed("T10", 610.0, 257.0);
+
     }
 }
 
